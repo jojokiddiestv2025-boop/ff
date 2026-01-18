@@ -2,11 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Toolbar } from './components/Toolbar';
 import { Cell } from './components/Cell';
 import { Dashboard } from './components/Dashboard';
-import { FormulaGenerator } from './components/FormulaGenerator';
-import { GridData, AnalysisResult } from './types';
+import { GridData } from './types';
 import { recalculateGrid, getColLetter, getCellId } from './utils/formulaUtils';
-import { analyzeData, suggestFormula } from './services/geminiService';
-import { Sparkles, Calculator } from 'lucide-react';
+import { Calculator } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
 // Constants for grid size
@@ -17,9 +15,6 @@ const App: React.FC = () => {
   const [grid, setGrid] = useState<GridData>({});
   const [selectedCell, setSelectedCell] = useState<string | null>('A1');
   const [showDashboard, setShowDashboard] = useState(false);
-  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [showFormulaWizard, setShowFormulaWizard] = useState(false);
 
   // Initialize with Basic Salary Template
   useEffect(() => {
@@ -92,23 +87,6 @@ const App: React.FC = () => {
     XLSX.writeFile(wb, "salary_sheet.xlsx");
   };
 
-  const handleAnalyze = async () => {
-    if (!showDashboard) setShowDashboard(true);
-    setIsAnalyzing(true);
-    const result = await analyzeData(grid);
-    setAnalysis(result);
-    setIsAnalyzing(false);
-  };
-
-  const handleGenerateFormula = async (prompt: string) => {
-    if (!selectedCell) return;
-    
-    const formula = await suggestFormula(prompt, grid, selectedCell);
-    if (formula) {
-      handleCellChange(selectedCell, formula);
-    }
-  };
-
   const handleAutoSum = () => {
     if (!selectedCell) return;
     
@@ -135,10 +113,8 @@ const App: React.FC = () => {
     <div className="h-screen flex flex-col bg-white font-sans text-gray-800">
       <Toolbar 
         onExport={handleExport} 
-        onAnalyze={handleAnalyze} 
         onToggleDashboard={() => setShowDashboard(!showDashboard)}
         showDashboard={showDashboard}
-        analyzing={isAnalyzing}
       />
 
       <div className="flex-1 flex overflow-hidden">
@@ -152,16 +128,6 @@ const App: React.FC = () => {
              </div>
              
              <div className="h-6 w-px bg-gray-300 mx-1"></div>
-             
-             {/* Magic AI Button */}
-             <button 
-               onClick={() => setShowFormulaWizard(true)}
-               className="flex items-center gap-1.5 px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded text-xs font-semibold transition-all"
-               title="Generate formula with AI"
-             >
-               <Sparkles size={14} />
-               Ask AI
-             </button>
 
              {/* AutoSum Button */}
              <button
@@ -231,17 +197,7 @@ const App: React.FC = () => {
         {showDashboard && (
           <Dashboard 
             grid={grid} 
-            analysis={analysis} 
             onClose={() => setShowDashboard(false)} 
-          />
-        )}
-
-        {/* AI Formula Wizard Modal */}
-        {showFormulaWizard && selectedCell && (
-          <FormulaGenerator 
-            targetCell={selectedCell}
-            onClose={() => setShowFormulaWizard(false)}
-            onGenerate={handleGenerateFormula}
           />
         )}
       </div>

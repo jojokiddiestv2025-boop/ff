@@ -1,20 +1,16 @@
 import React from 'react';
-import { Download, BarChart2, Sparkles, Bold, Italic, Type, Save } from 'lucide-react';
+import { Download, BarChart2, Bold, Italic, Type } from 'lucide-react';
 
 interface ToolbarProps {
   onExport: () => void;
-  onAnalyze: () => void;
   onToggleDashboard: () => void;
   showDashboard: boolean;
-  analyzing: boolean;
 }
 
 export const Toolbar: React.FC<ToolbarProps> = ({ 
   onExport, 
-  onAnalyze, 
   onToggleDashboard,
-  showDashboard,
-  analyzing
+  showDashboard
 }) => {
   return (
     <div className="h-14 bg-white border-b border-gray-200 flex items-center px-4 justify-between shrink-0 shadow-sm z-20">
@@ -45,15 +41,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         >
           <BarChart2 size={16} />
           Dashboard
-        </button>
-
-        <button
-          onClick={onAnalyze}
-          disabled={analyzing}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium text-purple-700 bg-purple-50 hover:bg-purple-100 transition-colors disabled:opacity-50"
-        >
-          <Sparkles size={16} />
-          {analyzing ? 'Analyzing...' : 'AI Insights'}
         </button>
 
         <button

@@ -1,16 +1,15 @@
 import React, { useMemo } from 'react';
-import { GridData, AnalysisResult } from '../types';
+import { GridData } from '../types';
 import { getColLetter } from '../utils/formulaUtils';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell as RechartsCell } from 'recharts';
 import { X } from 'lucide-react';
 
 interface DashboardProps {
   grid: GridData;
-  analysis: AnalysisResult | null;
   onClose: () => void;
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({ grid, analysis, onClose }) => {
+export const Dashboard: React.FC<DashboardProps> = ({ grid, onClose }) => {
   
   // Auto-detect numeric columns for charting
   const chartData = useMemo(() => {
@@ -61,21 +60,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ grid, analysis, onClose })
 
       <div className="flex-1 overflow-y-auto p-4 space-y-6 no-scrollbar">
         
-        {/* Analysis Section */}
-        {analysis && (
-          <div className="bg-purple-50 p-4 rounded-lg border border-purple-100 text-sm">
-            <h3 className="font-bold text-purple-800 mb-2 flex items-center gap-2">
-               AI Analysis
-            </h3>
-            <p className="text-gray-700 mb-3">{analysis.summary}</p>
-            <ul className="list-disc pl-4 space-y-1 text-gray-600">
-              {analysis.insights.map((insight, i) => (
-                <li key={i}>{insight}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
         {/* Charts */}
         {dataKeys.length > 0 ? (
           <>
