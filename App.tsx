@@ -21,74 +21,46 @@ const App: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showFormulaWizard, setShowFormulaWizard] = useState(false);
 
-  // Initialize with School Salary Template
+  // Initialize with Basic Salary Template
   useEffect(() => {
-    const headerStyle = { bold: true, backgroundColor: '#e0e7ff', color: '#3730a3' }; // Indigo theme
-    const highlightStyle = { bold: true, backgroundColor: '#f0fdf4', color: '#166534' }; // Green theme for totals
+    // Basic, neutral styles
+    const headerStyle = { bold: true, backgroundColor: '#f3f4f6', color: '#1f2937' }; 
+    const totalStyle = { bold: true, backgroundColor: '#e5e7eb' }; 
 
     const initialGrid: GridData = {
       // Headers
       'A1': { rawValue: 'Staff Name', computedValue: 'Staff Name', style: headerStyle },
-      'B1': { rawValue: 'Position', computedValue: 'Position', style: headerStyle },
+      'B1': { rawValue: 'Role', computedValue: 'Role', style: headerStyle },
       'C1': { rawValue: 'Annual Salary', computedValue: 'Annual Salary', style: headerStyle },
       'D1': { rawValue: 'Tax Rate', computedValue: 'Tax Rate', style: headerStyle },
-      'E1': { rawValue: 'Monthly Gross', computedValue: 'Monthly Gross', style: headerStyle },
-      'F1': { rawValue: 'Deductions', computedValue: 'Deductions', style: headerStyle },
-      'G1': { rawValue: 'Net Monthly Pay', computedValue: 'Net Monthly Pay', style: headerStyle },
+      'E1': { rawValue: 'Monthly Net', computedValue: 'Monthly Net', style: headerStyle },
 
-      // Row 2: Principal
+      // Row 2 (Empty Slot 1)
       'A2': { rawValue: '', computedValue: '' },
-      'B2': { rawValue: 'Principal', computedValue: 'Principal' },
-      'C2': { rawValue: '95000', computedValue: 95000 },
-      'D2': { rawValue: '0.25', computedValue: 0.25 },
-      'E2': { rawValue: '=C2/12', computedValue: 7916.67 }, // Auto-calc
-      'F2': { rawValue: '=E2*D2', computedValue: 1979.17 }, // Auto-calc
-      'G2': { rawValue: '=E2-F2', computedValue: 5937.5 },  // Auto-calc
+      'B2': { rawValue: '', computedValue: '' },
+      'C2': { rawValue: '0', computedValue: 0 },
+      'D2': { rawValue: '0.20', computedValue: 0.20 }, // Default 20%
+      'E2': { rawValue: '=(C2/12)*(1-D2)', computedValue: 0 }, // Simplified Formula: (Annual/12) * (1 - Tax)
 
-      // Row 3: Senior Teacher
+      // Row 3 (Empty Slot 2)
       'A3': { rawValue: '', computedValue: '' },
-      'B3': { rawValue: 'Math Head', computedValue: 'Math Head' },
-      'C3': { rawValue: '65000', computedValue: 65000 },
+      'B3': { rawValue: '', computedValue: '' },
+      'C3': { rawValue: '0', computedValue: 0 },
       'D3': { rawValue: '0.20', computedValue: 0.20 },
-      'E3': { rawValue: '=C3/12', computedValue: 5416.67 },
-      'F3': { rawValue: '=E3*D3', computedValue: 1083.33 },
-      'G3': { rawValue: '=E3-F3', computedValue: 4333.33 },
+      'E3': { rawValue: '=(C3/12)*(1-D3)', computedValue: 0 },
 
-      // Row 4: Teacher
+      // Row 4 (Empty Slot 3)
       'A4': { rawValue: '', computedValue: '' },
-      'B4': { rawValue: 'Science Teacher', computedValue: 'Science Teacher' },
-      'C4': { rawValue: '52000', computedValue: 52000 },
-      'D4': { rawValue: '0.18', computedValue: 0.18 },
-      'E4': { rawValue: '=C4/12', computedValue: 4333.33 },
-      'F4': { rawValue: '=E4*D4', computedValue: 780.00 },
-      'G4': { rawValue: '=E4-F4', computedValue: 3553.33 },
+      'B4': { rawValue: '', computedValue: '' },
+      'C4': { rawValue: '0', computedValue: 0 },
+      'D4': { rawValue: '0.20', computedValue: 0.20 },
+      'E4': { rawValue: '=(C4/12)*(1-D4)', computedValue: 0 },
 
-      // Row 5: Admin
-      'A5': { rawValue: '', computedValue: '' },
-      'B5': { rawValue: 'Admin Staff', computedValue: 'Admin Staff' },
-      'C5': { rawValue: '40000', computedValue: 40000 },
-      'D5': { rawValue: '0.15', computedValue: 0.15 },
-      'E5': { rawValue: '=C5/12', computedValue: 3333.33 },
-      'F5': { rawValue: '=E5*D5', computedValue: 500.00 },
-      'G5': { rawValue: '=E5-F5', computedValue: 2833.33 },
-
-      // Row 6: Assistant
-      'A6': { rawValue: '', computedValue: '' },
-      'B6': { rawValue: 'Teaching Asst.', computedValue: 'Teaching Asst.' },
-      'C6': { rawValue: '32000', computedValue: 32000 },
-      'D6': { rawValue: '0.12', computedValue: 0.12 },
-      'E6': { rawValue: '=C6/12', computedValue: 2666.67 },
-      'F6': { rawValue: '=E6*D6', computedValue: 320.00 },
-      'G6': { rawValue: '=E6-F6', computedValue: 2346.67 },
-
-      // Row 7: Totals
-      'A7': { rawValue: 'TOTALS', computedValue: 'TOTALS', style: highlightStyle },
-      'E7': { rawValue: '=SUM(E2:E6)', computedValue: 23666.67, style: highlightStyle },
-      'F7': { rawValue: '=SUM(F2:F6)', computedValue: 4662.50, style: highlightStyle },
-      'G7': { rawValue: '=SUM(G2:G6)', computedValue: 19004.17, style: highlightStyle },
+      // Row 5: Totals
+      'A5': { rawValue: 'TOTAL', computedValue: 'TOTAL', style: totalStyle },
+      'E5': { rawValue: '=SUM(E2:E4)', computedValue: 0, style: totalStyle },
     };
     
-    // Initial calculation to ensure all formulas resolve correctly immediately
     setGrid(recalculateGrid(initialGrid));
   }, []);
 
@@ -116,8 +88,8 @@ const App: React.FC = () => {
     }
 
     const ws = XLSX.utils.aoa_to_sheet(data);
-    XLSX.utils.book_append_sheet(wb, ws, "Salary_Sheet");
-    XLSX.writeFile(wb, "school_salary_schedule.xlsx");
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+    XLSX.writeFile(wb, "salary_sheet.xlsx");
   };
 
   const handleAnalyze = async () => {
@@ -160,7 +132,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50 font-sans">
+    <div className="h-screen flex flex-col bg-white font-sans text-gray-800">
       <Toolbar 
         onExport={handleExport} 
         onAnalyze={handleAnalyze} 
@@ -184,7 +156,7 @@ const App: React.FC = () => {
              {/* Magic AI Button */}
              <button 
                onClick={() => setShowFormulaWizard(true)}
-               className="flex items-center gap-1.5 px-2 py-1 bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 hover:from-purple-200 hover:to-blue-200 rounded text-xs font-semibold border border-purple-200 transition-all"
+               className="flex items-center gap-1.5 px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded text-xs font-semibold transition-all"
                title="Generate formula with AI"
              >
                <Sparkles size={14} />
@@ -208,20 +180,20 @@ const App: React.FC = () => {
                   className="w-full text-sm font-mono text-gray-700 outline-none bg-gray-50 border border-gray-200 rounded px-2 py-1 focus:border-blue-400 focus:bg-white transition-colors"
                   value={grid[selectedCell || '']?.rawValue || ''}
                   onChange={(e) => selectedCell && handleCellChange(selectedCell, e.target.value)}
-                  placeholder="Enter value or formula..."
+                  placeholder="Type a value..."
                 />
              </div>
            </div>
 
           {/* Scrollable Grid Container */}
           <div className="flex-1 overflow-auto relative bg-gray-100 p-4">
-            <div className="bg-white shadow-sm inline-block rounded-sm overflow-hidden">
+            <div className="bg-white shadow-sm inline-block rounded-sm overflow-hidden border border-gray-300">
               {/* Header Row */}
               <div className="flex sticky top-0 z-20 shadow-sm">
                  {/* Corner Spacer */}
-                <div className="w-[40px] h-[30px] bg-gray-50 border-r border-b border-gray-300 shrink-0 sticky left-0 z-30"></div>
+                <div className="w-[40px] h-[30px] bg-gray-100 border-r border-b border-gray-300 shrink-0 sticky left-0 z-30"></div>
                 {Array.from({ length: COLS }).map((_, colIndex) => (
-                  <div key={colIndex} className="min-w-[100px] h-[30px] bg-gray-50 border-r border-b border-gray-300 flex items-center justify-center text-xs font-bold text-gray-600 select-none">
+                  <div key={colIndex} className="min-w-[100px] h-[30px] bg-gray-100 border-r border-b border-gray-300 flex items-center justify-center text-xs font-semibold text-gray-600 select-none">
                     {getColLetter(colIndex)}
                   </div>
                 ))}
@@ -231,7 +203,7 @@ const App: React.FC = () => {
               {Array.from({ length: ROWS }).map((_, rowIndex) => (
                 <div key={rowIndex} className="flex group">
                   {/* Row Number (sticky left) */}
-                  <div className="w-[40px] h-[30px] bg-gray-50 border-r border-b border-gray-300 flex items-center justify-center text-xs text-gray-500 shrink-0 sticky left-0 z-10 group-hover:bg-gray-100 select-none font-medium">
+                  <div className="w-[40px] h-[30px] bg-gray-50 border-r border-b border-gray-300 flex items-center justify-center text-xs text-gray-500 shrink-0 sticky left-0 z-10 group-hover:bg-gray-100 select-none">
                     {rowIndex + 1}
                   </div>
                   

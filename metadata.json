@@ -1,5 +1,5 @@
 {
-  "name": "School Salary Manager",
-  "description": "An Excel-like spreadsheet application optimized for school salary calculations, payroll management, and budget visualization.",
+  "name": "Salary Sheet",
+  "description": "A basic spreadsheet for calculating salaries and payroll.",
   "requestFramePermissions": []
 }
